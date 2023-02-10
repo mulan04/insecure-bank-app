@@ -19,24 +19,37 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Run Trivy vulnerability scanner - FS mode
-        uses: aquasecurity/trivy-action@0.5.1
+      - name: Run Aqua scanner
+        uses: docker://aquasec/aqua-scanner
         with:
-          scan-type: 'fs'
-          security-checks: 'vuln,config,secret'
-          hide-progress: false
-          format: 'table'
+          args: trivy fs --security-checks config,vuln,secret .
+          # To customize which severities to scan for, add the following flag: --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          # To enable SAST scanning, add: --sast
+          # To enable npm/dotnet non-lock file scanning, add: --package-json / --dotnet-proj
         env:
           AQUA_KEY: ${{ secrets.AQUA_KEY }}
           AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
-          TRIVY_RUN_AS_PLUGIN: 'aqua'
-          TRIGGERED_BY: 'PUSH'
           GITHUB_TOKEN: ${{ github.token }}
+          TRIVY_RUN_AS_PLUGIN: 'aqua'
+          
+      #- name: Run Trivy vulnerability scanner - FS mode
+      #  uses: aquasecurity/trivy-action@0.5.1
+      #  with:
+      #    scan-type: 'fs'
+      #    security-checks: 'vuln,config,secret'
+      #    hide-progress: false
+      #    format: 'table'
+      #  env:
+      #    AQUA_KEY: ${{ secrets.AQUA_KEY }}
+      #    AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
+      #    TRIVY_RUN_AS_PLUGIN: 'aqua'
+      #    TRIGGERED_BY: 'PUSH'
+      #    GITHUB_TOKEN: ${{ github.token }}
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: "aquasaemea/insecure-bank-app:${{ github.sha }}"
+          tags: "aquasupportemea/insecure-bank-app:${{ github.sha }}"
       - name: Manifest Generation
         run: |
           docker image ls
@@ -45,4 +58,4 @@ jobs:
               --access-token "${{ secrets.GITHUB_TOKEN }}" \
              --aqua-key "${{ secrets.AQUA_KEY }}" \
              --aqua-secret "${{ secrets.AQUA_SECRET }}" \
-             --artifact-path "aquasaemea/insecure-bank-app:${{ github.sha }}"
+             --artifact-path "aquasupportaemea/insecure-bank-app:${{ github.sha }}"
