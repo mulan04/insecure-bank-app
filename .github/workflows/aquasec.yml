@@ -31,20 +31,6 @@ jobs:
           AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
           GITHUB_TOKEN: ${{ github.token }}
           TRIVY_RUN_AS_PLUGIN: 'aqua'
-          
-      #- name: Run Trivy vulnerability scanner - FS mode
-      #  uses: aquasecurity/trivy-action@0.5.1
-      #  with:
-      #    scan-type: 'fs'
-      #    security-checks: 'vuln,config,secret'
-      #    hide-progress: false
-      #    format: 'table'
-      #  env:
-      #    AQUA_KEY: ${{ secrets.AQUA_KEY }}
-      #    AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
-      #    TRIVY_RUN_AS_PLUGIN: 'aqua'
-      #    TRIGGERED_BY: 'PUSH'
-      #    GITHUB_TOKEN: ${{ github.token }}
       
       # Runs docker build 
       - name: Build docker image
@@ -88,12 +74,3 @@ jobs:
             # --artifact-path "my-image-name:${{ env.tag-version }}" 
             # OR the path to the root folder of your project. I.e my-repo/my-app 
             # --artifact-path "${{env.MY_APP_ROOT}}"
-      #- name: Manifest Generation
-        #run: |
-          #docker image ls
-          #curl -L ${{ secrets.BILLY_URL }}/v1/api/download/sh | sh
-          #billy generate \
-              #--access-token "${{ secrets.GITHUB_TOKEN }}" \
-             #--aqua-key "${{ secrets.AQUA_KEY }}" \
-             #--aqua-secret "${{ secrets.AQUA_SECRET }}" \
-             #--artifact-path 
